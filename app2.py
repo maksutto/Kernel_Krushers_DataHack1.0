@@ -1,8 +1,14 @@
-
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.arima_model import ARIMA
 import datahack_finbert
 import requests
 import streamlit as st
 from streamlit_lottie import st_lottie
+
+data=pd.read_csv("C:\Users\shrey\Desktop\college\datahack 2023\NSE_BANKING_SECTOR.csv")
+
 
 st.set_page_config(layout="wide")
 def load_lottieurl(url: str):
