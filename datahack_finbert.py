@@ -7,7 +7,7 @@ def getSentiment(bankName):
   from bs4 import BeautifulSoup
   import requests
   bank_name = bankName
-
+  article_info = []
   search_url = f"https://www.google.com/search?q={bank_name}&sxsrf=APwXEdfVzpfAF54BQQ6e0mr5fI2tPeW97A:1680341954287&source=lnms&tbm=nws&sa=X&ved=2ahUKEwie8KTKsYj-AhWkU2wGHatNBAkQ_AUoAnoECAEQBA&biw=1536&bih=754&dpr=1.25"
   headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299"
@@ -26,10 +26,13 @@ def getSentiment(bankName):
 
 
   article_data = []
-
+  article_title = []
+  
   for link in article_links:
     response_ = requests.get(link, headers=headers)
     soup_ = BeautifulSoup(response_.content, "lxml")
+    title = soup_.find("title")
+    article_title.append(title.text)
     meta_tag = soup_.find('meta', attrs={'name': 'description'})
     if meta_tag:
       description = meta_tag.get('content')
@@ -51,29 +54,11 @@ def getSentiment(bankName):
   results = nlp(sentence)
   #print(results)
 
-  neutral = 0
-  negative = 0
-  positive = 0
+  article_info.append({"URL":article_links,"Sentiment":results,"Title":article_title})
 
-  for result in results:
-    if result['label'] == 'Neutral':
-      neutral+=1
-    elif result['label'] == 'Negative':
-      negative+=1
-    elif result['label'] == 'Positive':
-      positive+=1
+  
 
-  overallLabel = ""
-  if max(neutral,negative,positive) == positive:
-    overallLabel = "Postive"
-  elif max(neutral,negative,positive) == negative:
-    overallLabel = "Negative"
-  elif max(neutral,negative,positive) == neutral:
-    if max(negative,positive) == positive:
-      overallLabel = "Postive"
-    else: overallLabel = "Negative"
-
-  return overallLabel
+  return article_info
 
   #import yfinance as yf
   #msft = yf.Ticker("MSFT")
