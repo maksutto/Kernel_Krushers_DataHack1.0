@@ -28,15 +28,20 @@ from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.optimizers import Adam
 from keras.metrics import categorical_crossentropy
+import streamlit as st
+import warnings
+from statsmodels.tools.sm_exceptions import ConvergenceWarning
+warnings.simplefilter('ignore', ConvergenceWarning)
 
 df = pd.read_csv("C:/Users/shrey/Desktop/college/datahack 2023/NSE_BANKING_SECTOR.csv")
 def graph2(bank):
   j=0;i=0
+  p = []
   for r in range(41231):
     if(df['SYMBOL'][r]==bank):
       if(j==0):
-        i=r;
-      j=r;
+        i=r
+      j=r
   x=df.iloc[i:j,4:8]
   y=df.iloc[i:j,8:9]
   #print(x)
@@ -60,13 +65,68 @@ def graph2(bank):
   from statsmodels.tsa.arima.model import ARIMA
   model = ARIMA(bank_data["CLOSE"], order=(p,d,q))  
   fitted = model.fit()  
-  print(fitted.summary())
+#   print(fitted.summary())
+  for l in range(len(bank_data)):
+      pred = 0
   pred = fitted.predict(start=len(bank_data), end=len(bank_data)+30)
   pred
-  bank_data["CLOSE"].plot(legend=True, label="Training Data", figsize=(15, 10))
-  pred.plot(legend=True, label="Predictions")
-  plt.grid(True)
-  plt.show()
-graph2('HDFC')
+  p=pd.Series(np.array(pred))
+  p=p.tolist()
+  #bank_data["CLOSE"].plot(legend=True, label="Training Data", figsize=(15, 10))
+  # pred.plot(legend=True, label="Predictions")
+#   plt.grid(True)
+#   plt.show()
+  # df2=pd.DataFrame()
+  # df2['close2']=bank_data["CLOSE"]
+  # df2['pred2']=pd.Series(np.array(pred))
+  # df2["date"] = pd.Series(np.array(bank_data["DATE"]))
+  # st.line_chart(df2,x='date',y=['close2','pred2'])
+  return (p[1], p[-1])
+#   print((bank_data['DATE'][0]))
+  
+#   df3 = pd.DataFrame()
+#   df3["date"] = pd.Series(np.array(bank_data["DATE"]))
+#   df3["preds"] = pd.Series(np.array(pred))
+#   fig, ax = plt.subplots(figsize=(15, 10))
+#   bank_data["CLOSE"].plot(ax=ax, legend=True, label="Training Data")
+#   plt.plot(df3["date"], df3["preds"], color="red", label="Predictions")
+#   plt.xlabel("Date")
+#   plt.ylabel("Closing Price")
+#   plt.title("Bank Stock Price Prediction")
+#   plt.legend()
+#   st.write(fig)
+# graph2('HDFC')
+names=[]
+max1=0;max2=0;max3=0;j=0
+m=[]
+n=[]
+names=[df['SYMBOL'].unique()]
+for i in range(36):
+  [j,k] = graph2(names[0][i])
+  if((k-j)>max1 and len(m)<3):
+      max1 = (k-j)
+      m.append(names[0][i])
 
-import streamlit as st
+  elif((k-j)>max2 and len(m)<3):
+      max2 = (k-j)  
+      m.append(names[0][i])
+
+  elif((k-j)>max3 and len(m)<3):
+      max3 = (k-j)  
+      m.append(names[0][i])
+print(max3)
+print(max2)
+print(max1)
+#   print(names[0][i])
+#   [j,k]=graph2(names[0][i])
+#   m.append(k-j)
+#   n.append(names[0][i])
+# z=zip(m,n)
+# print(list(z))
+
+
+
+
+
+
+

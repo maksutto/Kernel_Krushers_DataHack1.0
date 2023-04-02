@@ -2,6 +2,8 @@
 import datahack_finbert
 import requests
 import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
 from streamlit_lottie import st_lottie
 import yfinance as yf
 from pandas_datareader import data as pdr
@@ -11,6 +13,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import prediction
 import experimental
+import recommendation
 
 st.set_page_config(layout="wide")
 def load_lottieurl(url: str):
@@ -19,7 +22,7 @@ def load_lottieurl(url: str):
         return None
     return r.json()
 
-rad = st.sidebar.radio("**Navigation**",["Sentiment","Prediction","Recommendation","Customization"])
+rad = st.sidebar.radio("**Navigation**",["Sentiment","Prediction","Recommendation","Custom Fitting"])
 
 if rad == "Sentiment":
     st.markdown("<h1 style='text-align: center; color: white;'>Sentiment Analysis</h1>", unsafe_allow_html=True)
@@ -187,21 +190,48 @@ if rad == "Prediction":
             
 if rad == "Recommendation":
     st.markdown("<h1 style='text-align: center; color: white;'>Recommendation</h1>", unsafe_allow_html=True)
-    # with st.container():
-    #     graph_bank=st.selectbox("Enter name of bank",[1,2,3])
     with st.container():
         # st.write("---")
         left2, right2 = st.columns(2)
         with left2:
-            st.write(" ")
-            st.write("**Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.**")
+            
+            # Define the tickers of the 3 best performing banks according to yfinance
+            tickers = ['HDFCBANK.NS', 'ICICIBANK.NS','AXISBANK.NS']
+
+            # Create empty lists for the actual and predicted dataframes
+            actual_data = []
+            predicted_data = []
+            with st.spinner('Loading data...'):
+                # Loop through the tickers and predict the stock prices
+                for ticker in tickers:
+                    actual, predicted = recommendation.recommend_stock_price(ticker)
+                    actual_data.append(actual)
+                    predicted_data.append(predicted)
+
+            # Concatenate the actual and predicted dataframes for each ticker
+            actual_data = pd.concat(actual_data, axis=1)
+            predicted_data = pd.concat(predicted_data, axis=1)
+
+            # Plot the actual and predicted stock prices
+            chart_data = pd.concat([actual_data, predicted_data], axis=1)
+
+            # Set chart title and axes labels
+            plt.title('Bank Stock Price Prediction')
+            plt.xlabel('Date')
+            plt.ylabel('Stock Price')
+
+            # Plot the combined actual and predicted stock prices for all tickers
+            st.line_chart(chart_data)
+
         with right2:
             st.write(" ")
             lottie_url = "https://assets6.lottiefiles.com/packages/lf20_pvso4otf.json"
             lottie_json = load_lottieurl(lottie_url)
             st_lottie(lottie_json,height = 300)
+        
+        st.success("After analyzing the trends of various banks in the country, it has been found that stocks of HDFC Bank are trending upwards the most")
 
-if rad == "Customization":
+if rad == "Custom Fitting":
     st.markdown("<h1 style='text-align: center; color: white;'>Customization</h1>", unsafe_allow_html=True)
 
     opening_price = st.experimental_get_query_params().get("opening_price", None)
@@ -230,5 +260,6 @@ if rad == "Customization":
             # Convert the DatetimeIndex to a regular column
             stock_data['Date'] = stock_data['Date'].dt.date
             st.experimental_data_editor(stock_data)
+
 
 
