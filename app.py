@@ -232,7 +232,7 @@ if rad == "Recommendation":
         st.success("After analyzing the trends of various banks in the country, it has been found that stocks of HDFC Bank are trending upwards the most")
 
 if rad == "Custom Fitting":
-    st.markdown("<h1 style='text-align: center; color: white;'>Customization</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: white;'>Custom Fitting</h1>", unsafe_allow_html=True)
 
     opening_price = st.experimental_get_query_params().get("opening_price", None)
     opening_price = float(opening_price[0]) if opening_price else None

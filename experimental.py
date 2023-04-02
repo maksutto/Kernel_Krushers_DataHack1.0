@@ -5,6 +5,7 @@ import numpy as np
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 import plotly.graph_objs as go
 
+@st.cache_data
 def predict_stock_price(ticker, opening_price,bank_name):
     # Load HDFC stock data from Yahoo Finance
     stock_data = yf.Ticker(ticker).history(period="max")
