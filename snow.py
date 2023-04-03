@@ -5,7 +5,7 @@ import pandas as pd
 # Snowflake connection parameters
 account = 'https://xclcdmf-ob08539.snowflakecomputing.com'
 user = 'DEVPATEL'
-password = '@Tulratilal211'
+password = ''
 database = 'STOCKS'
 schema = 'BANK'
 warehouse = 'COMPUTE_WH'
