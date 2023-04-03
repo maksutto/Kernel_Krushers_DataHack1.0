@@ -122,6 +122,7 @@ soupsieve==2.3.2.post1
 sqlparse==0.4.3
 stack-data==0.6.2
 streamlit==1.20.0
+streamlit_lottie==0.0.3
 sympy==1.11.1
 tenacity==8.1.0
 tensorboard==2.12.1
