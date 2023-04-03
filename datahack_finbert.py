@@ -1,6 +1,6 @@
-
+import streamlit as st
 import time
-
+@st.cache_data
 def getSentiment(bankName):
   from transformers import BertTokenizer , BertForSequenceClassification
   from transformers import pipeline
