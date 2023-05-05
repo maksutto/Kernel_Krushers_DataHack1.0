@@ -68,15 +68,15 @@ if rad == "Sentiment":
             df["200 day rolling"] = df["High"].rolling(window=200).mean()
 
             company_info = yf.Ticker(ticker).info
-
+            print(company_info)
             info_container = st.container()
             col1, col2, col3 = info_container.columns(3)
 
             with col1:
                 st.metric(
                     label=company_info["shortName"],
-                    value="%.2f" % company_info["regularMarketPrice"],
-                    delta="%.2f" % (company_info["regularMarketPrice"] -
+                    value="%.2f" % company_info["regularMarketOpen"],
+                    delta="%.2f" % (company_info["regularMarketOpen"] -
                                     company_info["regularMarketPreviousClose"]),
                 )
             with col2:
